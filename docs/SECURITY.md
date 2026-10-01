@@ -1,308 +1,401 @@
-# ROLVIO — SECURITY
+# ROLVIO — SECURITY & PRIVACY
 
 ## 1. Goal
 
-Rolvio handles highly sensitive candidate information.
+Rolvio handles highly sensitive user information.
 
-Security must be part of the design from the beginning.
+Security must be part of the architecture from the beginning.
 
 ---
 
 # 2. Sensitive Information
 
-Sensitive information includes:
+Sensitive data includes:
 
-- Full name
-- Email
-- Phone
-- Location
-- Resume
-- Education
-- Employment
-- Salary
-- Work authorization
-- Application answers
-- Email credentials
-- Browser sessions
-- Cookies
-- Authentication tokens
-- Recruiter emails
+- Full name.
+- Email.
+- Phone.
+- Location.
+- Resume.
+- Education.
+- Employment.
+- Salary.
+- Work authorization.
+- Application answers.
+- Email credentials.
+- Browser sessions.
+- Cookies.
+- NORVI Authentication Key.
+- NORVI authentication tokens.
+- Recruiter emails.
 
 ---
 
-# 3. Secrets
+# 3. NORVI Authentication Security
+
+Rolvio login requires:
+
+- Email.
+- Password.
+- Authentication Key.
+
+The desktop application must authenticate through the NORVI backend/API.
+
+The desktop application must never contain production agency-database credentials.
+
+The desktop application must never directly connect to the production authentication database.
+
+---
+
+# 4. Password Policy
+
+Raw user passwords must:
+
+- Never be stored locally.
+- Never be written to logs.
+- Never be included in diagnostics.
+- Never be cached in plaintext files.
+
+Password fields should be cleared from memory/UI state when practical after authentication.
+
+---
+
+# 5. Authentication Key Security
+
+The Authentication Key is sensitive.
+
+It must:
+
+- Never appear in normal logs.
+- Never be committed to Git.
+- Never be included in exported diagnostics.
+- Be transmitted only over secure HTTPS to the NORVI backend.
+
+If local retention is required by a future design, it must use protected credential storage.
+
+---
+
+# 6. Authentication Tokens
+
+Access/session/refresh tokens should use OS-backed secure storage.
+
+On Windows:
+
+Use Windows Credential Manager or another approved protected-storage abstraction.
+
+Do not store tokens as normal plaintext SQLite values.
+
+---
+
+# 7. Secrets Policy
 
 Never commit:
 
-- API keys
-- Passwords
-- Tokens
-- Cookies
-- Email credentials
-- License tokens
-- Session states
+- Passwords.
+- Authentication Keys.
+- API keys.
+- Tokens.
+- Cookies.
+- Email credentials.
+- Browser session files.
+- Private license data.
 
 ---
 
-# 4. Environment Files
+# 8. Environment Files
 
-Real `.env` files must be ignored by Git.
+Real environment files must be ignored by Git.
 
 Only `.env.example` should be committed.
 
 ---
 
-# 5. Credential Storage
+# 9. Ollama Installation Security
 
-Use secure operating-system-backed storage.
-
-On Windows:
-
-Use Windows Credential Manager or another approved protected storage system.
-
-Do not store email app passwords in plaintext SQLite fields.
-
----
-
-# 6. Browser Sessions
-
-Browser sessions may provide access to job accounts.
+Rolvio may install Ollama automatically when missing.
 
 Requirements:
 
-- Never commit session files
-- Never print cookies in logs
-- Store sessions under private application data
-- Provide logout/remove session
-- Protect session files appropriately
+- Download from an approved official source.
+- Validate expected installer/source where practical.
+- Do not execute arbitrary downloaded binaries.
+- Avoid visible command windows.
+- Respect Windows UAC/security requirements.
+- Record installation failures safely.
 
 ---
 
-# 7. Database
+# 10. Ollama Process Security
+
+Rolvio must never indiscriminately terminate every Ollama process.
+
+Track process ownership.
+
+If Rolvio started the runtime:
+
+It may stop the Rolvio-owned process during shutdown.
+
+If Ollama already existed:
+
+Leave it running.
+
+---
+
+# 11. Ollama Cloud Privacy
+
+Production model:
+
+`gemma4:cloud`
+
+This is cloud-hosted AI inference.
+
+Therefore relevant AI content may leave the local PC for processing by Ollama's cloud service.
+
+Rolvio must minimize what is sent.
+
+Only send context needed for the current operation.
+
+Possible required context:
+
+- Relevant candidate-profile fields.
+- Relevant resume-derived information.
+- Job description.
+- Application question.
+- Relevant email excerpt for classification.
+
+Do not send unrelated:
+
+- Local files.
+- Email history.
+- Entire database.
+- Unrelated resume sections.
+- Secrets.
+
+---
+
+# 12. No Silent AI Provider Changes
+
+Rolvio must not silently move user data to a different AI provider.
+
+Changing AI provider/model behavior requires an explicit documented product decision.
+
+---
+
+# 13. Browser Sessions
+
+Browser sessions may grant access to job accounts.
+
+Requirements:
+
+- Never commit session files.
+- Never print cookies.
+- Store under private application data.
+- Protect appropriately.
+- Provide logout/removal.
+- Detect expiration.
+
+---
+
+# 14. Local Database
 
 SQLite contains private candidate information.
 
 Requirements:
 
-- Store locally
-- Never commit DB
-- Use repository layer
-- Use migrations
-- Use transactions
-- Enable foreign keys
+- Store locally.
+- Never commit DB.
+- Use repositories.
+- Use migrations.
+- Use transactions.
+- Enable foreign keys.
 
 ---
 
-# 8. Resume Security
+# 15. Resume Security
 
-Validate uploads.
+Validate uploads:
 
-Check:
-
-- File type
-- File extension
-- File size
-- Filename
+- File type.
+- Extension.
+- Size.
+- Filename.
 
 Do not execute uploaded files.
 
----
-
-# 9. AI Privacy
-
-If using local Ollama:
-
-Candidate AI processing should remain local.
-
-If a remote AI provider is added:
-
-The user must know that relevant information may be transmitted externally.
-
-Rolvio must never silently change from local to remote AI.
+Store documents only under controlled application directories.
 
 ---
 
-# 10. NORVI Licensing Privacy
+# 16. Email Security
 
-Licensing may use:
+Email credentials must use secure credential storage.
 
-- Account identity
-- Activation key
-- Device authorization
-- License state
+Use TLS-protected IMAP.
 
-Normal licensing must not upload:
+TLS certificate validation must remain enabled.
 
-- Resume
-- Application history
-- Job history
-- Email content
-- Full candidate profile
+Do not store app passwords as plaintext database fields.
 
 ---
 
-# 11. Logs
+# 17. Job Platform Login
+
+Prefer user-controlled interactive login.
+
+Do not ask users to paste raw browser cookies as the normal authentication experience.
+
+---
+
+# 18. CAPTCHA
+
+Rolvio does not bypass CAPTCHA automatically.
+
+Pause and request user action.
+
+---
+
+# 19. Logging
 
 Never log full:
 
-- Passwords
-- API keys
-- Tokens
-- Cookies
-- Authorization headers
-- Resume contents
-- Private email bodies
+- Passwords.
+- Authentication Keys.
+- API keys.
+- Access tokens.
+- Cookies.
+- Authorization headers.
+- Resume contents.
+- Private email bodies.
 
 Use redaction.
 
 ---
 
-# 12. Diagnostics
+# 20. Diagnostics
 
-Diagnostics may contain page content.
+Diagnostics may include website content.
 
-Before exporting diagnostics:
+Before export/sharing, redact sensitive information where practical.
 
-Sensitive values should be redacted where possible.
-
----
-
-# 13. Email Security
-
-Use secure IMAP.
-
-TLS certificate verification must remain enabled.
-
-Email credentials must use secure credential storage.
+Never include stored credentials.
 
 ---
 
-# 14. Login
+# 21. NORVI Backend Privacy Boundary
 
-Prefer user-controlled interactive login to job platforms.
+NORVI authentication may receive data required for:
 
-Avoid asking users to manually paste raw session cookies as the standard login method.
+- Account authentication.
+- Authentication Key validation.
+- Product access validation.
+- Security/session validation.
 
----
+Normal authentication must not upload:
 
-# 15. CAPTCHA
-
-Do not bypass CAPTCHA automatically.
-
-Ask the user.
-
----
-
-# 16. URL Validation
-
-Browser navigation should validate URLs where necessary.
-
-Allow expected web schemes:
-
-https
-
-and carefully controlled http where required for local development.
-
-Reject unsafe schemes unless specifically needed.
+- Resume.
+- Job history.
+- Application history.
+- Email content.
+- Full CandidateProfile.
 
 ---
 
-# 17. File Paths
+# 22. URL Validation
 
-Never trust external filenames directly.
+Validate browser navigation where needed.
+
+Expected external schemes:
+
+- HTTPS.
+- Controlled HTTP for local development only.
+
+Reject unsafe/unexpected schemes unless explicitly required.
+
+---
+
+# 23. File Path Safety
 
 Prevent:
 
-- Path traversal
-- Unexpected directories
-- Unsafe filenames
+- Path traversal.
+- Unsafe filenames.
+- Unexpected directories.
+- Arbitrary execution.
 
 ---
 
-# 18. Dependencies
+# 24. Dependency Security
 
 Before release:
 
-- Review dependencies
-- Remove unused libraries
-- Pin appropriate versions
-- Check security advisories where practical
+- Review dependencies.
+- Remove unused libraries.
+- Pin stable versions where appropriate.
+- Review known security advisories where practical.
 
 ---
 
-# 19. Least Privilege
+# 25. Least Privilege
 
-Rolvio should run without administrator rights during normal operation.
+Normal Rolvio operation should not require Windows Administrator access.
 
-Administrator rights should only be needed if the installer specifically requires them.
-
----
-
-# 20. Licensing
-
-License tokens must:
-
-- Be validated
-- Expire
-- Be securely stored
-- Be independently verified
-
-The existence of a local lease file must not automatically mean it is valid.
+Installation may require OS elevation when unavoidable.
 
 ---
 
-# 21. Application Data Integrity
+# 26. Application Data Integrity
 
 Incorrect application information can harm users.
 
-Therefore:
+Unknown factual information must never be guessed.
 
-Unknown important information must never be guessed.
-
-This is considered a security/data-integrity requirement.
+This is a security and data-integrity requirement.
 
 ---
 
-# 22. Error Messages
+# 27. User-Facing Errors
 
-User-facing errors must not reveal:
+User-facing errors must not expose:
 
-- Passwords
-- Tokens
-- Cookies
-- Secret file contents
-- Full stack traces
+- Passwords.
+- Authentication Keys.
+- Tokens.
+- Cookies.
+- Secret file contents.
+- Full stack traces.
 
 Technical details belong in diagnostics.
 
 ---
 
-# 23. Security Review Before Release
+# 28. Security Review Before Release
 
 Review:
 
-- Credentials
-- Sessions
-- Database
-- Resumes
-- Email
-- AI providers
-- Network requests
-- Licensing
-- Logs
-- Diagnostics
-- Installer
+- NORVI authentication.
+- Credential storage.
+- Ollama installer.
+- Ollama runtime control.
+- Ollama cloud data boundary.
+- Browser sessions.
+- Database.
+- Resumes.
+- Email.
+- Network destinations.
+- Logs.
+- Diagnostics.
+- Installer.
 
 ---
 
-# 24. Security Incident Process
+# 29. Security Incident Process
 
-If a security issue is discovered:
+If a security problem is discovered:
 
 1. Stop affected functionality.
-2. Determine affected data.
-3. Protect users.
+2. Determine scope.
+3. Protect affected user data.
 4. Fix root cause.
 5. Add regression test.
-6. Update documentation.
+6. Update documentation if architecture changes.
 7. Release corrected version.

@@ -2,48 +2,48 @@
 
 ## Project
 
-New Rolvio rebuild.
+New Rolvio clean rebuild.
 
 ---
 
 # Current Status
 
-Planning and architecture.
+Planning and architecture stage.
 
-No major application implementation has started yet.
+No production application implementation has started.
 
 ---
 
-# Why New Rolvio Is Being Built
+# Why Rolvio Is Being Rebuilt
 
-The old Rolvio demonstrated that the product idea works, but several major issues were identified.
+The old Rolvio proved the product concept but exposed important architectural problems.
 
-Main problems included:
+Main lessons:
 
 - Application execution was unreliable.
-- Different platforms had separate application logic.
+- Platforms had too much separate application logic.
 - Candidate profile data was inconsistent.
 - Resume upload was incomplete.
-- Application success verification was weak.
-- Some runners treated clicking Submit as success.
+- Submission verification was weak.
+- Some runners treated Submit clicks as success.
 - Unexpected website states caused failures.
-- Some errors were silently ignored.
+- Some exceptions were silently ignored.
 - Session validation was weak.
-- Email tracking had bugs.
-- Background state depended too much on logs/processes.
+- Email tracking contained bugs.
+- Background state depended too much on logs/process behavior.
 
-The new Rolvio architecture is designed specifically to remove these problems.
+The new architecture is designed to remove these problems.
 
 ---
 
 # Product Goal
 
-Rolvio should manage:
+Rolvio manages:
 
 Job Search
 → Matching
 → Approval
-→ Application
+→ Automatic Application
 → Verification
 → Email Tracking
 → Recruitment Tracking
@@ -51,59 +51,132 @@ Job Search
 
 ---
 
-# Initial Platforms
+# Locked NORVI Authentication
 
-- LinkedIn
-- Naukri
-- Internshala
-- Indeed
-- Wellfound
+Rolvio requires:
+
+- Email.
+- Password.
+- Authentication Key.
+
+Authentication is handled through the NORVI backend/API.
+
+The desktop application must not connect directly to the agency production database.
+
+Raw passwords must not be stored.
+
+Authentication tokens must use secure storage.
 
 ---
 
-# Future Platforms
+# Locked AI Runtime
 
-Possible future support:
+Runtime:
 
-- Shine
-- TimesJobs
-- Hirist
-- Freshersworld
-- Glassdoor
-- Remotive
-- Other platforms
-- External ATS providers
+Ollama
+
+Production model:
+
+`gemma4:cloud`
+
+This is an Ollama cloud-hosted model accessed through the local Ollama application/runtime.
+
+Main AI inference therefore does not depend on the user's local GPU.
+
+---
+
+# Locked Ollama Startup Behavior
+
+On startup:
+
+1. Check Ollama installation.
+2. Install automatically when missing.
+3. Avoid visible command windows.
+4. Start Ollama silently if not already running.
+5. Track whether Rolvio started it.
+6. Verify Ollama Cloud access.
+7. Request one-time Ollama sign-in when needed.
+8. Ensure `gemma4:cloud`.
+9. Health-check AI before dependent tasks run.
+
+---
+
+# Locked Ollama Runtime Recovery
+
+While Rolvio is running:
+
+- Monitor Ollama health.
+- Restart silently after unexpected crash/closure.
+- Pause AI-dependent tasks during recovery.
+- Use limited retries.
+- Report failure if recovery cannot succeed.
+
+---
+
+# Locked Ollama Shutdown Behavior
+
+If Ollama was already running before Rolvio:
+
+Do not stop it when Rolvio closes.
+
+If Rolvio started Ollama:
+
+Rolvio may stop the runtime it owns during application shutdown.
+
+---
+
+# Initial Supported Platforms
+
+- LinkedIn.
+- Naukri.
+- Internshala.
+- Indeed.
+- Wellfound.
+
+---
+
+# Future Platform Possibilities
+
+- Shine.
+- TimesJobs.
+- Hirist.
+- Freshersworld.
+- Glassdoor.
+- Remotive.
+- External ATS systems.
+- Other platforms.
 
 ---
 
 # Locked Technology
 
-- Windows 11
-- Python 3.13.15
-- `.venv`
-- PySide6
-- Playwright
-- Pydantic
-- SQLite
-- SQLAlchemy
-- Alembic
-- pytest
-- PyInstaller
-- Ollama AI Gateway
+- Windows 11.
+- Python 3.13.15.
+- `.venv`.
+- PySide6.
+- Playwright.
+- Pydantic.
+- SQLite.
+- SQLAlchemy.
+- Alembic.
+- pytest.
+- PyInstaller.
+- Ollama.
+- `gemma4:cloud`.
 
 ---
 
 # Most Important Architecture Rule
 
-Build one:
+Build:
 
-Generic Application Engine
+One Generic Application Engine
 
 and connect:
 
-Platform Adapters.
+Platform Adapters
 
-Do not build five separate autonomous application systems.
+Do not build five independent autonomous application systems.
 
 ---
 
@@ -115,21 +188,39 @@ does NOT mean:
 
 Application successful.
 
-Only Verification Engine can produce VERIFIED_APPLIED.
+Only VerificationEngine can produce:
+
+`VERIFIED_APPLIED`
 
 ---
 
-# Most Important Data Rule
+# Most Important Candidate Rule
 
-Never invent important user facts.
+Never invent important candidate facts.
 
 Unknown important information must be requested from the user.
 
 ---
 
+# Most Important Authentication Rule
+
+NORVI account authentication, Ollama authentication and job-platform authentication are separate systems.
+
+Do not mix them together.
+
+---
+
+# Most Important Privacy Rule
+
+Rolvio is local-first for product data, but `gemma4:cloud` performs AI inference through Ollama Cloud.
+
+Do not describe production AI inference as fully local.
+
+---
+
 # Current Phase
 
-Phase 0 — Product and Architecture
+Phase 0 — Product & Architecture
 
 ---
 
@@ -137,54 +228,38 @@ Phase 0 — Product and Architecture
 
 - Old Rolvio reviewed.
 - Major old-system problems identified.
-- Decision made to rebuild.
+- Clean rebuild decision made.
 - Product requirements defined.
+- Authentication requirements locked.
+- Ollama runtime requirements locked.
+- `gemma4:cloud` selected.
 - Architecture defined.
-- Design direction defined.
+- Design defined.
 - Development rules defined.
-- Master phase plan defined.
+- Phase plan defined.
 - Testing strategy defined.
 - Security strategy defined.
 
 ---
 
-# Current Next Steps
+# Immediate Next Step
 
-1. Review all 10 project files.
-2. Make sure there are no contradictions.
+1. Replace the ten documentation files with corrected versions.
+2. Review for contradictions.
 3. Mark Phase 0 complete.
-4. Start Phase 1.
-5. Build foundation only.
-6. Do not start LinkedIn or other platform automation early.
-
----
-
-# Important Development Reminder
-
-The project should follow:
-
-READ
-→ UNDERSTAND
-→ PLAN
-→ IMPLEMENT
-→ TEST
-→ REVIEW
-→ FIX
-→ COMMIT
-→ UPDATE DOCUMENTATION
-
-Do not skip testing because code was generated successfully.
+4. Create the new Rolvio project architecture.
+5. Begin Phase 1.
+6. Do not begin LinkedIn/application adapters early.
 
 ---
 
 # Known Future Decisions
 
-These do not need to block the first architecture phase:
+These do not block Phase 1:
 
-- Final NORVI licensing API contract.
-- Final updater system.
-- Multiple resume support timing.
-- Future ATS support.
-- Exact production AI model configuration.
+- Exact NORVI API endpoint contract.
+- Exact final installer/update distribution mechanism.
+- Multiple-resume feature timing.
+- Future ATS implementation order.
 
-These should be decided in their relevant phases.
+The production AI model is no longer an open decision.

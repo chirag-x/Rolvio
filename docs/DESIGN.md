@@ -12,20 +12,21 @@ Rolvio should look like a premium AI productivity application.
 
 It should feel:
 
-- Modern
-- Intelligent
-- Professional
-- Minimal
-- Powerful
-- Trustworthy
-- Clean
+- Modern.
+- Intelligent.
+- Professional.
+- Minimal.
+- Powerful.
+- Trustworthy.
+- Clean.
 
 It should not look like:
 
-- Developer tooling
-- Streamlit prototype
-- Gaming dashboard
-- Overly colorful application
+- Developer tooling.
+- A Streamlit prototype.
+- A gaming dashboard.
+- A debug console.
+- An overly colorful application.
 
 ---
 
@@ -41,55 +42,55 @@ Dark.
 
 ## Main Background
 
-#070B12
+`#070B12`
 
 ## Secondary Background
 
-#0D131F
+`#0D131F`
 
 ## Card Background
 
-#111A29
+`#111A29`
 
 ## Primary Blue
 
-#2F81F7
+`#2F81F7`
 
 ## Secondary Blue
 
-#45A3FF
+`#45A3FF`
 
 ## Cyan Accent
 
-#38D9FF
+`#38D9FF`
 
 ## Primary Text
 
-#F5F7FA
+`#F5F7FA`
 
 ## Secondary Text
 
-#A8B3C7
+`#A8B3C7`
 
 ## Muted Text
 
-#69758A
+`#69758A`
 
 ## Success
 
-#2BD576
+`#2BD576`
 
 ## Warning
 
-#F7B955
+`#F7B955`
 
 ## Error
 
-#FF5C6C
+`#FF5C6C`
 
 ## Information
 
-#4BA3FF
+`#4BA3FF`
 
 ---
 
@@ -103,21 +104,20 @@ Fallback:
 
 Segoe UI
 
-Technical / logs:
+Technical/log text:
 
 JetBrains Mono
 
 ---
 
-# 5. Application Layout
+# 5. Application Shell
 
 ```text
-┌───────────────────────────────────────────────────────────────┐
-│ Rolvio                                          Status / User │
-├───────────────┬───────────────────────────────────────────────┤
-│               │                                               │
-│ Sidebar       │                                               │
-│               │             Main Content                      │
-│               │                                               │
-│               │                                               │
-└───────────────┴───────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────┐
+│ Rolvio by NORVI                              Status / Account │
+├───────────────┬──────────────────────────────────────────────┤
+│               │                                              │
+│ Sidebar       │              Main Content                    │
+│               │                                              │
+│               │                                              │
+└───────────────┴──────────────────────────────────────────────┘

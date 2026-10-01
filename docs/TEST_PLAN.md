@@ -4,97 +4,216 @@
 
 This document defines what "working" means.
 
-Code running without crashing does not mean the product works correctly.
+Code running without crashing does not prove correctness.
 
 ---
 
 # 1. Test Levels
 
-Rolvio should use:
+Rolvio uses:
 
-1. Unit tests
-2. Integration tests
-3. Browser fixture tests
-4. End-to-end tests
-5. Platform regression tests
-6. Real-platform smoke tests
-7. Clean-machine production tests
+1. Unit tests.
+2. Integration tests.
+3. Browser fixture tests.
+4. End-to-end tests.
+5. Platform regression tests.
+6. Controlled real-platform smoke tests.
+7. Clean-machine production tests.
 
 ---
 
-# 2. Candidate Tests
+# 2. NORVI Authentication Tests
 
 Test:
 
-- Profile creation
-- Profile update
-- Save/load
-- Skills
-- Experience
-- Education
-- Salary
-- Authorization
-- Notice period
-- Personal statement
-- Standard answers
+- Valid email/password/authentication key.
+- Invalid email.
+- Invalid password.
+- Invalid Authentication Key.
+- Expired key.
+- Revoked key.
+- Disabled account.
+- Product not authorized.
+- Network unavailable.
+- Backend timeout.
+- Invalid backend response.
+- Authentication retry.
+- Secure token storage.
+- Valid session reuse.
+- Expired session.
+- Logout.
+- Restart after login.
 
-All information must survive database round-trips.
+Security assertions:
+
+- Raw password is not persisted.
+- Password never appears in logs.
+- Authentication Key never appears in logs.
+- Desktop application never contains production database credentials.
 
 ---
 
-# 3. Resume Tests
+# 3. Ollama Installation Tests
 
 Test:
 
-- Valid PDF
-- Invalid PDF
-- Text extraction
-- Structured parsing
-- Original resume storage
-- File retrieval
-- Browser upload
-- Invalid file type
-- Invalid filename
+- Ollama already installed.
+- Ollama missing.
+- Automatic installation succeeds.
+- Installation failure.
+- Installer missing/corrupt.
+- Windows permission/UAC-required case.
+- No visible CMD/PowerShell window from Rolvio.
 
 ---
 
-# 4. Job Normalization Tests
-
-For each platform:
-
-Verify:
-
-- Job ID
-- Platform
-- Title
-- Company
-- URL
-- Description
-- Location
-- Work type
-- Salary
-- Apply type
-
-Test duplicates.
-
----
-
-# 5. Matching Tests
+# 4. Ollama Runtime Tests
 
 Test:
 
-- Strong skill match
-- Missing skills
-- Experience mismatch
-- Location mismatch
-- Work authorization mismatch
-- Appropriate score structure
-- Invalid AI response
-- AI timeout
+- Ollama installed and already running.
+- Ollama installed but stopped.
+- Rolvio starts Ollama.
+- API becomes healthy.
+- Startup timeout.
+- Ollama process crashes.
+- User closes Ollama.
+- Health monitor detects failure.
+- Rolvio silently restarts runtime.
+- Restart limit enforced.
 
 ---
 
-# 6. Approval Policy Tests
+# 5. Ollama Ownership Tests
+
+Scenario A:
+
+Ollama already running before Rolvio.
+
+Expected:
+
+- owned_by_rolvio = false.
+- Rolvio shutdown does not stop Ollama.
+
+Scenario B:
+
+Ollama not running.
+
+Rolvio starts it.
+
+Expected:
+
+- owned_by_rolvio = true.
+- Rolvio shutdown stops Rolvio-owned runtime.
+
+---
+
+# 6. Ollama Cloud Authentication Tests
+
+Test:
+
+- Already signed in / cloud access ready.
+- Sign-in required.
+- One-time sign-in successful.
+- Sign-in cancelled.
+- Sign-in failure.
+- Cloud authentication expired.
+- Reauthentication.
+- Network unavailable.
+
+---
+
+# 7. Model Tests
+
+Required model:
+
+`gemma4:cloud`
+
+Test:
+
+- Model available.
+- Model not yet prepared.
+- Automatic pull/preparation.
+- Preparation failure.
+- Health inference succeeds.
+- Cloud network failure.
+- Model unavailable.
+- No silent fallback to different model.
+
+---
+
+# 8. Candidate Tests
+
+Test:
+
+- Profile creation.
+- Profile update.
+- Save/load.
+- Skills.
+- Experience.
+- Education.
+- Salary.
+- Authorization.
+- Notice period.
+- Personal statement.
+- Standard answers.
+
+All information must survive persistence round-trips.
+
+---
+
+# 9. Resume Tests
+
+Test:
+
+- Valid PDF.
+- Invalid PDF.
+- Text extraction.
+- Structured parsing.
+- Original resume storage.
+- File retrieval.
+- Browser upload.
+- Invalid file type.
+- Invalid filename.
+
+---
+
+# 10. Job Normalization Tests
+
+For every platform fixture verify:
+
+- Job ID.
+- Platform.
+- Title.
+- Company.
+- URL.
+- Description.
+- Location.
+- Work type.
+- Salary.
+- Apply type.
+
+Test duplicate detection.
+
+---
+
+# 11. Matching Tests
+
+Test:
+
+- Strong skill match.
+- Missing skills.
+- Experience mismatch.
+- Location mismatch.
+- Authorization mismatch.
+- Structured score.
+- Invalid AI response.
+- AI timeout.
+- Ollama runtime unavailable.
+
+---
+
+# 12. Approval Policy Tests
 
 Manual:
 
@@ -106,148 +225,90 @@ Respect configured thresholds.
 
 Autonomous:
 
-Respect all configured restrictions.
+Respect all restrictions.
 
 Test:
 
-- Minimum score
-- Platform restrictions
-- Company blacklist
-- Location restrictions
-- Daily application limit
+- Minimum score.
+- Platform restrictions.
+- Company blacklist.
+- Location restrictions.
+- Daily application limit.
+- Role restrictions.
 
 ---
 
-# 7. Fake Application Forms
+# 13. Fake Application Form Matrix
 
-Create fake browser pages covering:
+Build local fake pages for:
 
-## Simple Text
+- Text.
+- Email.
+- Phone.
+- Number.
+- Textarea.
+- Native select.
+- Radio.
+- Checkbox.
+- Checkbox group.
+- Custom dropdown.
+- Combobox.
+- Autocomplete.
+- Date.
+- File upload.
+- Resume upload.
+- Multiselect.
+- Multi-step flow.
+- Iframe.
+- New tab.
+- Validation error.
+- Unexpected modal.
 
-Name
-Email
-Phone
-
-## Number
-
-Years of experience
-
-## Textarea
-
-Why do you want this role?
-
-## Dropdown
-
-Notice period
-
-## Radio
-
-Work authorization
-
-## Checkbox
-
-Consent
-
-## Checkbox Group
-
-Skills
-
-## Custom Dropdown
-
-React-style control
-
-## Combobox
-
-Searchable option
-
-## Autocomplete
-
-Location
-
-## Date
-
-Available start date
-
-## File
-
-Document upload
-
-## Resume
-
-Resume upload
-
-## Multi-Step
-
-Next
-Next
-Review
-Submit
-
-## Iframe
-
-Application inside iframe
-
-## New Tab
-
-Application opens in new tab
-
-## Validation Error
-
-Required field missing
-
-## Unexpected Modal
-
-Additional confirmation
-
-Every form type must be detected correctly.
+Every control must normalize correctly.
 
 ---
 
-# 8. Answer Engine Tests
+# 14. Answer Engine Tests
 
 Test:
 
-- Name from profile
-- Email from profile
-- Phone from profile
-- Experience from profile
-- Salary from profile
-- Sponsorship from profile
-- Saved answer
-- Equivalent previous question
-- AI writing answer
-- Unknown factual question
+- Name from CandidateProfile.
+- Email from CandidateProfile.
+- Phone from CandidateProfile.
+- Experience from CandidateProfile.
+- Salary from CandidateProfile.
+- Sponsorship from CandidateProfile.
+- Saved answer.
+- Equivalent prior question.
+- AI-generated writing.
+- Unknown factual question.
 
-Unknown factual question should return:
+Unknown factual information must return:
 
-NEEDS_USER
+`NEEDS_USER`
 
-It must never fabricate a value.
-
----
-
-# 9. Form Filling Tests
-
-After filling:
-
-Verify actual browser value.
-
-Test:
-
-- Text
-- Number
-- Select
-- Radio
-- Checkbox
-- Custom dropdown
-- Date
-- File
-- Resume
-- Multi-select
+Never fabricate.
 
 ---
 
-# 10. Application State Tests
+# 15. Form Filling Tests
+
+Verify actual browser state after filling:
+
+- Text.
+- Number.
+- Select.
+- Radio.
+- Checkbox.
+- Custom select.
+- Date.
+- File.
+- Resume.
+- Multiselect.
+
+---
+
+# 16. Application State Tests
 
 Valid example:
 
@@ -265,145 +326,142 @@ CREATED
 → VERIFYING
 → VERIFIED_APPLIED
 
-Invalid example:
+Invalid:
 
 CREATED
 → VERIFIED_APPLIED
 
-must fail.
+must be rejected.
 
 ---
 
-# 11. Verification Tests
+# 17. Verification Tests
 
-Critical test:
-
-Submit button clicked but form shows validation error.
+Submit clicked but validation error appears.
 
 Expected:
 
 NOT VERIFIED.
 
-Submit clicked and success page appears.
+Submit clicked and confirmation page appears.
 
 Expected:
 
 VERIFIED_APPLIED.
 
-Submit clicked but result unclear.
+Submit clicked but result is unclear.
 
 Expected:
 
 SUBMITTED_UNVERIFIED.
 
-Already applied detected.
+Already Applied detected.
 
 Expected:
 
 ALREADY_APPLIED.
 
-Console says:
+Console contains:
 
-Application submitted successfully.
+`Application submitted successfully`
 
 Expected:
 
-No effect on application status.
+No effect on business state.
 
 ---
 
-# 12. Recovery Tests
+# 18. Recovery Tests
 
 Simulate:
 
-- Popup
-- New tab
-- Iframe
-- Expired session
-- Validation error
-- Missing required field
-- Network timeout
-- Removed DOM element
-- Browser crash
-- Job closed
-- Unexpected application step
+- Popup.
+- New tab.
+- Iframe.
+- Expired platform session.
+- Validation error.
+- Missing field.
+- Network timeout.
+- Element detached.
+- Browser crash.
+- Closed job.
+- Unexpected application step.
 
 Verify:
 
-- Retry limit
-- Recovery attempt
-- Correct state
-- Failure diagnostics
-- No infinite loop
+- Retry limits.
+- Recovery attempt.
+- Correct final state.
+- Failure diagnostics.
+- No infinite loop.
 
 ---
 
-# 13. CAPTCHA Test
+# 19. CAPTCHA Test
 
 Expected:
 
-- Detect CAPTCHA
-- Pause application
-- Set CAPTCHA_REQUIRED
-- Ask user
-- Do not bypass CAPTCHA
-- Resume after manual completion
+- CAPTCHA detected.
+- Application paused.
+- State = CAPTCHA_REQUIRED.
+- User notified.
+- No bypass attempted.
+- Application resumes after manual completion.
 
 ---
 
-# 14. Session Tests
+# 20. Job Platform Session Tests
 
 Test:
 
-- Login
-- Save session
-- Restore session
-- Detect expired session
-- Detect login redirect
-- Clear session
+- Login.
+- Save session.
+- Restore session.
+- Detect expiration.
+- Detect login redirect.
+- Clear session.
 
-A session file alone must not count as valid login.
+Session-file existence must not automatically mean valid authentication.
 
 ---
 
-# 15. Email Tests
+# 21. Email Tests
 
 Test:
 
-- First scan
-- New email scan
-- UID persistence
-- Old email ignored
-- Application confirmation
-- Assessment
-- Interview
-- Rejection
-- Offer
-- Irrelevant email
+- First scan.
+- New email scan.
+- UID persistence.
+- Old emails ignored.
+- Confirmation email.
+- Assessment.
+- Interview.
+- Rejection.
+- Offer.
+- Irrelevant email.
+- Ambiguous match.
 
-Test ambiguous matching.
-
-Rolvio must not modify the wrong application.
+Rolvio must not update the wrong application.
 
 ---
 
-# 16. Database Tests
+# 22. Database Tests
 
 Test:
 
-- Fresh database
-- Migration
-- Foreign keys
-- Transactions
-- Restart
-- Application event persistence
-- Task persistence
+- Fresh database.
+- Migration.
+- Foreign keys.
+- Transactions.
+- Restart.
+- Application-event persistence.
+- Task persistence.
 
 ---
 
-# 17. Dashboard Tests
+# 23. Dashboard Tests
 
-Verify metrics reflect real database state.
+Verify real state drives metrics.
 
 Failed application must not count as Verified Applied.
 
@@ -411,142 +469,158 @@ Submitted Unverified must not count as Verified Applied.
 
 ---
 
-# 18. LinkedIn Tests
+# 24. LinkedIn Tests
 
-Test real controlled examples for:
+Controlled real scenarios:
 
-- Already applied
-- Easy Apply
-- Multi-step
-- Radio question
-- Dropdown
-- Resume
-- Review
-- Successful verification
+- Already applied.
+- Easy Apply.
+- Multi-step.
+- Radio.
+- Dropdown.
+- Resume.
+- Review.
+- Verified submission.
 
 ---
 
-# 19. Internshala Tests
+# 25. Internshala Tests
 
 Test:
 
-- Eligible
-- Not eligible
-- Resume/profile step
-- Custom questions
-- Cover letter
-- Submit
+- Eligible.
+- Not eligible.
+- Profile/resume step.
+- Custom questions.
+- Cover letter.
+- Submit.
 
 Critical:
 
-Not Eligible must never become Applied.
+Not Eligible must never become Verified Applied.
 
 ---
 
-# 20. Naukri Tests
+# 26. Naukri Tests
 
 Test:
 
-- Native apply
-- External redirect
-- Form fields
-- Custom questions
-- Verification
+- Native apply.
+- External redirect.
+- Form fields.
+- Custom questions.
+- Verification.
 
-Do not fill unrelated website inputs.
+Do not fill unrelated website controls.
 
 ---
 
-# 21. Indeed Tests
+# 27. Indeed Tests
 
 Test:
 
-- Indeed Apply
-- Iframe
-- Multi-step
-- Resume
-- Required questions
-- Human verification
-- Submission verification
+- Indeed Apply.
+- Iframe.
+- Multi-step.
+- Resume.
+- Required questions.
+- Human verification.
+- Submission verification.
 
 Important exceptions must never be silently ignored.
 
 ---
 
-# 22. Wellfound Tests
+# 28. Wellfound Tests
 
 Test:
 
-- Apply
-- Interest question
-- URLs
-- Multi-step
-- New field after Next
-- Verification
+- Apply.
+- Interest question.
+- URLs.
+- Multi-step.
+- New fields after Next.
+- Verification.
 
-Every new step must be observed again.
-
----
-
-# 23. Failure Diagnostics Test
-
-Force a failure.
-
-Verify generation of:
-
-- Screenshot
-- Metadata
-- URL
-- Visible text
-- Trace
-- Page HTML when appropriate
+Every step must be re-observed.
 
 ---
 
-# 24. Security Tests
+# 29. Failure Diagnostics Test
+
+Force failure.
+
+Verify creation of:
+
+- Screenshot.
+- Metadata.
+- URL.
+- Visible text.
+- Trace.
+- Page HTML where appropriate.
+
+Ensure secrets are redacted.
+
+---
+
+# 30. Security Tests
 
 Check:
 
-- No secrets in Git
-- Email password not plaintext DB value
-- Logs redact secrets
-- Sessions protected
-- File validation works
+- No secrets in Git.
+- No raw password storage.
+- Authentication Key absent from logs.
+- Email password not plaintext DB data.
+- Logs redact tokens.
+- Browser sessions protected.
+- File validation works.
 
 ---
 
-# 25. Fresh Windows Test
+# 31. Fresh Windows Test
 
-On clean Windows environment:
+On clean Windows:
 
-1. Install.
+1. Install Rolvio.
 2. Launch.
-3. Database initializes.
-4. Playwright works.
-5. UI works.
-6. Profile saves.
-7. Resume uploads.
-8. Platform login works.
-9. Job search works.
-10. Controlled application works.
+3. Authenticate.
+4. Detect missing Ollama.
+5. Install Ollama.
+6. Complete Ollama sign-in if needed.
+7. Prepare `gemma4:cloud`.
+8. Verify AI health.
+9. Database initializes.
+10. Playwright works.
+11. UI works.
+12. Profile saves.
+13. Resume uploads.
+14. Platform login works.
+15. Job search works.
+16. Controlled application works.
+17. Close Rolvio.
+18. Confirm only Rolvio-owned Ollama is stopped.
 
 ---
 
-# 26. Release Blocking Issues
+# 32. Release Blocking Issues
 
 Release must stop if:
 
+- Authentication can be bypassed unintentionally.
+- Secrets leak.
+- Ollama setup fails on clean machines.
+- Ollama crash recovery is broken.
+- Rolvio kills pre-existing Ollama.
 - False application success occurs.
-- Candidate information is fabricated.
-- Plaintext secrets exist.
+- Candidate facts are fabricated.
 - Fresh installation fails.
 - Critical tests fail.
-- Browser failures provide no diagnostics.
+- Browser failure generates no diagnostics.
 - Supported platform application is fundamentally broken.
 
 ---
 
-# 27. Definition of Tested
+# 33. Definition of Tested
 
 A feature is tested only when:
 
@@ -554,4 +628,4 @@ A feature is tested only when:
 - Failure path passes.
 - Edge cases pass.
 - Regression tests pass where relevant.
-- Actual user outcome is verified.
+- Real user outcome is verified.
