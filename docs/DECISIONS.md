@@ -1,24 +1,24 @@
 # ROLVIO — ARCHITECTURE DECISIONS
 
-This document records important long-term decisions.
+This file contains long-term decisions.
 
 ---
 
-# ADR-001 — Rebuild Rolvio
+# ADR-001 — Clean Rebuild
 
 Decision:
 
-Build the new Rolvio from a clean architecture.
+Build new Rolvio from a clean architecture.
 
 Reason:
 
-The old implementation proved the concept but accumulated serious architectural problems.
+The old implementation proved the concept but accumulated architectural problems.
 
-Old code can be used as reference but should not dictate the new architecture.
+The old project may be consulted as reference but must not dictate the new architecture.
 
 ---
 
-# ADR-002 — Python
+# ADR-002 — Python 3.13.15
 
 Decision:
 
@@ -26,15 +26,15 @@ Use Python 3.13.15.
 
 ---
 
-# ADR-003 — Environment
+# ADR-003 — Standard `.venv`
 
 Decision:
 
-Use standard `.venv`.
+Use standard Python virtual environments.
 
 ---
 
-# ADR-004 — Desktop Application
+# ADR-004 — PySide6 Desktop UI
 
 Decision:
 
@@ -42,11 +42,11 @@ Use PySide6.
 
 Reason:
 
-Rolvio is intended to be a professional Windows desktop product rather than a development-style Streamlit application.
+Rolvio is intended to be a professional Windows desktop product.
 
 ---
 
-# ADR-005 — Browser Automation
+# ADR-005 — Playwright Browser Automation
 
 Decision:
 
@@ -54,100 +54,226 @@ Use Playwright directly.
 
 Reason:
 
-Rolvio requires direct access to:
+Rolvio requires control over:
 
-- Browser lifecycle
-- Tabs
-- Frames
-- Forms
-- Screenshots
-- Navigation
-- Uploads
-- Browser states
+- Browser lifecycle.
+- Tabs.
+- Frames.
+- Forms.
+- Screenshots.
+- Uploads.
+- Navigation.
+- Browser state.
 
 ---
 
-# ADR-006 — One Generic Application Engine
+# ADR-006 — Mandatory NORVI Authentication
 
 Decision:
 
-Build one shared Application Engine.
+Main Rolvio access requires:
 
-Do not create completely independent application bots per platform.
+- Email.
+- Password.
+- Authentication Key.
+
+Authentication must be performed through the NORVI backend/API.
+
+The desktop application must not connect directly to the production agency database.
 
 ---
 
-# ADR-007 — Platform Adapters
+# ADR-007 — Secure Authentication Storage
+
+Decision:
+
+Raw passwords are never stored.
+
+Authentication tokens use OS-backed secure credential storage.
+
+Authentication Keys are treated as sensitive secrets.
+
+---
+
+# ADR-008 — Ollama Production Runtime
+
+Decision:
+
+Use Ollama as Rolvio's production AI runtime/client.
+
+---
+
+# ADR-009 — Production Model
+
+Decision:
+
+Use:
+
+`gemma4:cloud`
+
+for Rolvio AI functionality.
+
+This is a cloud-hosted Ollama model accessed through the local Ollama runtime.
+
+---
+
+# ADR-010 — No Silent AI Model Fallback
+
+Decision:
+
+Rolvio does not silently switch to another model or provider.
+
+Reason:
+
+Behavior, privacy and product expectations must remain predictable.
+
+---
+
+# ADR-011 — Automatic Ollama Setup
+
+Decision:
+
+Rolvio automatically detects whether Ollama is installed.
+
+If missing, Rolvio performs the approved installation flow.
+
+Normal setup must not display command windows.
+
+OS-required UAC/security prompts may appear.
+
+---
+
+# ADR-012 — One-Time Ollama Cloud Authentication
+
+Decision:
+
+If Ollama Cloud authentication is unavailable, Rolvio prompts the user to complete the required Ollama sign-in.
+
+After valid authentication, normal Rolvio launches should not repeatedly show this setup unless authentication becomes invalid.
+
+---
+
+# ADR-013 — Automatic Model Preparation
+
+Decision:
+
+Rolvio ensures `gemma4:cloud` is available/prepared automatically.
+
+Model preparation should run in the background.
+
+---
+
+# ADR-014 — Ollama Health Monitoring
+
+Decision:
+
+Rolvio monitors Ollama while running.
+
+If Ollama crashes or is accidentally closed, Rolvio attempts a silent restart.
+
+Retries must have limits.
+
+---
+
+# ADR-015 — Ollama Process Ownership
+
+Decision:
+
+Rolvio must track whether it started Ollama.
+
+If Ollama existed before Rolvio:
+
+Rolvio does not stop it on exit.
+
+If Rolvio started the runtime:
+
+Rolvio may stop the Rolvio-owned runtime during graceful shutdown.
+
+---
+
+# ADR-016 — Cloud AI Privacy
+
+Decision:
+
+Production AI processing is not described as fully local because `gemma4:cloud` is cloud-hosted.
+
+Rolvio minimizes information sent to AI and only sends task-relevant context.
+
+---
+
+# ADR-017 — One Generic Application Engine
+
+Decision:
+
+Build one generic shared application engine.
+
+Do not create independent application bots for each platform.
+
+---
+
+# ADR-018 — Platform Adapters
 
 Decision:
 
 Platform-specific behavior belongs in adapters.
 
-Initial:
+Initial adapters:
 
-- LinkedIn
-- Naukri
-- Internshala
-- Indeed
-- Wellfound
+- LinkedIn.
+- Naukri.
+- Internshala.
+- Indeed.
+- Wellfound.
 
 ---
 
-# ADR-008 — Canonical CandidateProfile
+# ADR-019 — Canonical CandidateProfile
 
 Decision:
 
 Use one CandidateProfile everywhere.
 
-Reason:
-
-The old system stored important information in inconsistent places.
-
 ---
 
-# ADR-009 — Canonical Job Model
+# ADR-020 — Canonical Job Model
 
 Decision:
 
-Normalize every job before using it downstream.
+Normalize all jobs before downstream use.
 
 ---
 
-# ADR-010 — Application State Machine
+# ADR-021 — Application State Machine
 
 Decision:
 
-Every job application must follow explicit states.
-
-Reason:
-
-Rolvio must always know where it is in the application workflow.
+Every application follows explicit states.
 
 ---
 
-# ADR-011 — Verification Controls Success
+# ADR-022 — Verification Controls Success
 
 Decision:
 
-Only Verification Engine may return VERIFIED_APPLIED.
+Only VerificationEngine may produce:
 
-Reason:
+`VERIFIED_APPLIED`
 
 Clicking Submit does not prove success.
 
 ---
 
-# ADR-012 — Structured Internal Results
+# ADR-023 — Structured Internal Results
 
 Decision:
 
 Subsystems communicate through structured objects.
 
-Never use human console text as application state.
+Console text is never business state.
 
 ---
 
-# ADR-013 — Unknown Facts Require User
+# ADR-024 — Unknown Facts Require User Input
 
 Decision:
 
@@ -155,139 +281,91 @@ Important unknown factual information must not be invented.
 
 ---
 
-# ADR-014 — AI Does Not Directly Control Browser
+# ADR-025 — AI Does Not Directly Control Browser
 
 Decision:
 
-AI may reason and produce structured recommendations.
+AI may reason and produce structured output.
 
-Deterministic code performs browser actions.
+Deterministic code executes browser actions.
 
 ---
 
-# ADR-015 — Local Database
+# ADR-026 — SQLite
 
 Decision:
 
-Use SQLite.
+Use local SQLite for Rolvio product data.
 
 ---
 
-# ADR-016 — SQLAlchemy
+# ADR-027 — SQLAlchemy Repositories
 
 Decision:
 
-Use SQLAlchemy repositories.
-
-Reason:
-
-Database logic should stay separate from UI and automation.
+Use SQLAlchemy through repository/service layers.
 
 ---
 
-# ADR-017 — Database Migrations
+# ADR-028 — Alembic Migrations
 
 Decision:
 
-Use Alembic.
+Use Alembic for database schema changes.
 
 ---
 
-# ADR-018 — Local-First Privacy
+# ADR-029 — Secure Credentials Outside Ordinary SQLite Fields
 
 Decision:
 
-Candidate information should remain local whenever possible.
+Email passwords, authentication tokens and similar secrets use secure credential storage rather than plaintext database fields.
 
 ---
 
-# ADR-019 — Secure Credential Storage
+# ADR-030 — CAPTCHA Requires Human Action
 
 Decision:
 
-Do not store email passwords or similar secrets as plaintext SQLite fields.
-
-Use OS-backed credential storage.
+Rolvio does not automate CAPTCHA bypass.
 
 ---
 
-# ADR-020 — AI Gateway
+# ADR-031 — Diagnostics Are Core Functionality
 
 Decision:
 
-All model calls use AIGateway.
-
-No business module should depend directly on one AI SDK.
+Browser failure screenshots, traces and page evidence are part of the architecture.
 
 ---
 
-# ADR-021 — Ollama Initial Runtime
+# ADR-032 — Fake Application Sites
 
 Decision:
 
-Use Ollama as the current preferred AI runtime.
-
-Current preferred model:
-
-Gemma 4 approximately 32B.
-
-The model remains configuration rather than core architecture.
+Use local fake application pages for deterministic browser testing.
 
 ---
 
-# ADR-022 — CAPTCHA
+# ADR-033 — Real Platform Smoke Tests
 
 Decision:
 
-CAPTCHA requires human action.
-
-Rolvio does not bypass it.
+Fake tests do not replace controlled real-platform validation.
 
 ---
 
-# ADR-023 — Diagnostics
+# ADR-034 — Structured Background Task Manager
 
 Decision:
 
-Failure diagnostics are mandatory.
+Use persistent task state.
 
-Reason:
-
-Supported websites can change.
+Do not use PID files as the primary business-state mechanism.
 
 ---
 
-# ADR-024 — Local Fake Application Sites
-
-Decision:
-
-Build fake application websites for testing.
-
-Reason:
-
-We need repeatable browser tests.
-
----
-
-# ADR-025 — Real Website Smoke Testing
-
-Decision:
-
-Fake tests do not replace controlled testing on real supported platforms.
-
----
-
-# ADR-026 — Background Task Manager
-
-Decision:
-
-Use structured task state.
-
-Do not use PID files as the main application-state system.
-
----
-
-# ADR-027 — Packaging
+# ADR-035 — Packaging
 
 Decision:
 
@@ -295,14 +373,15 @@ Use PyInstaller initially.
 
 ---
 
-# ADR-028 — Initial Platform Order
+# ADR-036 — Initial Application Adapter Order
 
 Implementation order:
 
-1. LinkedIn
-2. Internshala
-3. Naukri
-4. Indeed
-5. Wellfound
+1. LinkedIn.
+2. Internshala.
+3. Naukri.
+4. Indeed.
+5. Wellfound.
 
-Core application infrastructure must be completed before these platform phases.
+Generic application infrastructure must exist before these phases.2
+3.

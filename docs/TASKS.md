@@ -1,8 +1,27 @@
+
+---
+
+# 5. `TASKS.md`
+
+```markdown
 # ROLVIO — MASTER DEVELOPMENT PHASES
 
-## Rule
+## Development Rule
 
 Complete one phase before moving to the next.
+
+For each phase:
+
+Read
+→ Understand
+→ Plan
+→ Implement
+→ Test
+→ Review
+→ Fix
+→ Re-test
+→ Report
+→ Update Documentation
 
 ---
 
@@ -10,136 +29,159 @@ Complete one phase before moving to the next.
 
 Goal:
 
-Lock the new Rolvio design before coding.
+Lock the complete Rolvio specification.
 
 Tasks:
 
 - Finalize PRD.
 - Finalize architecture.
 - Finalize design.
-- Finalize development rules.
-- Finalize security plan.
-- Finalize test strategy.
-- Confirm supported platforms.
-- Confirm application state system.
-- Confirm success verification rules.
+- Finalize rules.
+- Finalize testing.
+- Finalize security.
+- Lock NORVI authentication behavior.
+- Lock Ollama runtime behavior.
+- Lock `gemma4:cloud`.
+- Lock supported platforms.
+- Lock application states.
+- Lock submission verification.
 
 Done when:
 
-The project documentation has no major contradictions.
+The ten documentation files have no major contradictions.
 
 ---
 
 # PHASE 1 — PROJECT FOUNDATION
 
-Tasks:
+Build:
 
-- Create project structure.
-- Python 3.13.15 setup.
+- Python 3.13.15 project.
 - `.venv`.
 - Requirements.
-- Configuration.
-- Logging.
+- Project paths.
+- Configuration loader.
+- Logging foundation.
+- Error foundation.
 - Basic launcher.
-- Basic PySide6 app.
 - pytest configuration.
-- Application paths.
+- Basic PySide6 startup.
 
 Done when:
 
-Rolvio launches and test suite runs.
+Rolvio launches cleanly and the test suite runs.
 
 ---
 
-# PHASE 2 — DOMAIN MODELS
+# PHASE 2 — SECURITY & SECRET FOUNDATION
 
 Build:
 
-- CandidateProfile
-- ResumeDocument
-- Job
-- JobMatch
-- Application
-- ApplicationEvent
-- FormField
-- ResolvedAnswer
-- VerificationResult
-- EmailEvent
-- BackgroundTask
-- Enums
+- CredentialStore abstraction.
+- Windows secure credential integration.
+- Secret handling.
+- Token storage.
+- Redaction.
+- Secure configuration handling.
+- Sensitive log filtering.
+
+Done when:
+
+Passwords, authentication tokens and email credentials do not require plaintext SQLite storage.
+
+---
+
+# PHASE 3 — NORVI AUTHENTICATION
+
+Build:
+
+- Auth models.
+- NORVI API client.
+- AuthService.
+- Email/password/authentication-key login.
+- Secure token/session handling.
+- Session validation.
+- Logout.
+- Error mapping.
+- Authentication tests.
+
+Do NOT connect the desktop app directly to the production agency database.
+
+Done when:
+
+Valid users authenticate and invalid credentials/keys are handled correctly.
+
+---
+
+# PHASE 4 — OLLAMA RUNTIME MANAGER
+
+Build:
+
+- Ollama installation detection.
+- Approved installer/downloader.
+- Silent start.
+- No CMD/PowerShell windows.
+- Process detection.
+- Process ownership.
+- Health checks.
+- Ollama sign-in requirement detection.
+- One-time interactive Ollama sign-in flow.
+- `gemma4:cloud` preparation/pull.
+- Cloud-access health check.
+- Crash/closure detection.
+- Silent runtime restart.
+- Graceful shutdown.
+- Ownership-aware shutdown.
+- Network failure handling.
+
+Done when:
+
+Ollama can be prepared automatically on a clean machine and recovered after an unexpected runtime failure.
+
+---
+
+# PHASE 5 — DOMAIN MODELS
+
+Build:
+
+- CandidateProfile.
+- ResumeDocument.
+- Job.
+- JobMatch.
+- Application.
+- ApplicationEvent.
+- FormField.
+- ResolvedAnswer.
+- VerificationResult.
+- EmailEvent.
+- BackgroundTask.
+- PlatformSession.
+- AuthSession.
+- AIRuntimeState.
+- Enums.
 
 Add validation tests.
 
 ---
 
-# PHASE 3 — DATABASE
+# PHASE 6 — DATABASE & REPOSITORIES
 
 Build:
 
-- SQLite
-- SQLAlchemy
-- Alembic
-- Database initialization
-- Candidate repository
-- Job repository
-- Application repository
-- Email repository
-- Answer repository
-- Session repository
-- Task repository
+- SQLite.
+- SQLAlchemy.
+- Alembic.
+- Database initialization.
+- CandidateRepository.
+- DocumentRepository.
+- JobRepository.
+- ApplicationRepository.
+- AnswerRepository.
+- EmailRepository.
+- PlatformSessionRepository.
+- TaskRepository.
 
-Test fresh database creation.
-
----
-
-# PHASE 4 — CANDIDATE PROFILE
-
-Build complete Candidate Profile system.
-
-Include:
-
-- Personal
-- Career
-- Skills
-- Experience
-- Education
-- Projects
-- Certifications
-- Languages
-- Compensation
-- Preferences
-- Authorization
-- Standard answers
-
----
-
-# PHASE 5 — DOCUMENT SYSTEM
-
-Build:
-
-- Resume upload
-- PDF parser
-- Resume text extraction
-- Resume structured extraction
-- Original resume storage
-- Document manager
-- Resume path management
-- File validation
-
-Test upload and later browser upload.
-
----
-
-# PHASE 6 — SECURITY FOUNDATION
-
-Build:
-
-- Credential Store
-- Secret manager
-- Encryption
-- Redaction
-- Secure session storage
-- Secure email credentials
+Test fresh database initialization.
 
 ---
 
@@ -147,464 +189,537 @@ Build:
 
 Build:
 
-- Provider interface
-- Ollama provider
-- Model configuration
-- Structured responses
-- Timeouts
-- Retry logic
-- Prompt system
-- Guardrails
-- Fake test provider
+- AIGateway.
+- OllamaProvider.
+- `gemma4:cloud` configuration.
+- Structured AI responses.
+- Timeouts.
+- Retries.
+- Prompt registry.
+- Validation.
+- Guardrails.
+- Fake AI provider for tests.
+
+Done when:
+
+Business modules never call Ollama directly.
 
 ---
 
-# PHASE 8 — UI FOUNDATION
+# PHASE 8 — DESKTOP UI FOUNDATION
 
 Build:
 
-- Main window
-- Sidebar
-- Navigation
-- Theme
-- Cards
-- Buttons
-- Tables
-- Dialogs
-- Badges
-- Loading states
-- Error states
+- Main window.
+- Theme.
+- Shared controls.
+- Navigation system.
+- Login view.
+- Startup/preparation view.
+- Sidebar.
+- Cards.
+- Tables.
+- Badges.
+- Dialogs.
+- Loading states.
+- Error states.
+
+Connect Login UI to AuthService.
 
 ---
 
-# PHASE 9 — PROFILE UI
+# PHASE 9 — BOOTSTRAP ORCHESTRATION
 
-Build:
+Build startup flow:
 
-- Profile page
-- Resume page
-- Candidate sections
-- Save/load
-- Validation
-- Documents view
-
----
-
-# PHASE 10 — BROWSER RUNTIME
-
-Build:
-
-- Playwright Browser Manager
-- Context management
-- Tabs
-- Frames
-- Navigation
-- Screenshots
-- Browser modes
-- Timeouts
-- Artifact capture
-
----
-
-# PHASE 11 — SESSION MANAGER
-
-Build:
-
-- Login workflow
-- Session save
-- Session restore
-- Session verification
-- Expired session detection
-- Login required state
-- Session UI
-
----
-
-# PHASE 12 — PLATFORM ADAPTER FRAMEWORK
-
-Build:
-
-- PlatformAdapter interface
-- Platform registry
-- Platform capabilities
-- Adapter loader
-
-Register:
-
-- LinkedIn
-- Naukri
-- Internshala
-- Indeed
-- Wellfound
-
----
-
-# PHASE 13 — JOB NORMALIZATION
-
-Build:
-
-- RawPlatformJob
-- Job normalization
-- URL normalization
-- Company normalization
-- Location normalization
-- Duplicate detection
-
----
-
-# PHASE 14 — JOB DISCOVERY ENGINE
-
-Build generic discovery service.
-
-Include:
-
-- Multiple platforms
-- Search request
-- Pagination
-- Limits
-- Cancellation
-- Progress
-- Errors
-- Persistence
-
----
-
-# PHASE 15 — JOB SEARCH ADAPTERS
-
-Implement search for:
-
-- LinkedIn
-- Naukri
-- Internshala
-- Indeed
-- Wellfound
-
-Test real job discovery.
-
----
-
-# PHASE 16 — JOB MATCHING ENGINE
-
-Build:
-
-- Skills comparison
-- Experience comparison
-- Location compatibility
-- Education compatibility
-- Authorization compatibility
-- Semantic analysis
-- Overall match
-- Missing skills
-- Explanation
-
----
-
-# PHASE 17 — APPROVAL ENGINE
-
-Build:
-
-- Manual mode
-- Smart mode
-- Autonomous mode
-- Match thresholds
-- Company exclusion
-- Platform rules
-- Location rules
-- Daily limits
-
----
-
-# PHASE 18 — FORM FIELD MODEL
-
-Build normalized types for:
-
-- Text
-- Number
-- Textarea
-- Select
-- Radio
-- Checkbox
-- Combobox
-- Autocomplete
-- Multiselect
-- Date
-- File
-- Resume
-- Consent
-- Unknown
-
----
-
-# PHASE 19 — FORM OBSERVER
-
-Build:
-
-- Form detection
-- Field extraction
-- Labels
-- Required fields
-- Current values
-- Options
-- Validation state
-- Stable field identification
-
-Use fake websites for tests.
-
----
-
-# PHASE 20 — ANSWER ENGINE
-
-Build:
-
-- CandidateProfile answers
-- Saved answers
-- Semantic answer matching
-- Safe derivation
-- Writing answers
-- Unknown factual detection
-- Confidence
-- Batch answering
-
----
-
-# PHASE 21 — ANSWER MEMORY
-
-Build:
-
-- Question memory
-- Equivalent questions
-- User-confirmed answers
-- Reuse policy
-- Edit/delete
-- Confidence
-
----
-
-# PHASE 22 — FORM FILLER
+Application Start
+→ Configuration
+→ Authentication
+→ Ollama Runtime
+→ Database
+→ Main UI
 
 Implement:
 
-- Text
-- Number
-- Textarea
-- Select
-- Radio
-- Checkbox
-- Custom dropdown
-- Combobox
-- Autocomplete
-- Date
-- File upload
-- Resume upload
-- Multiselect
-
-Verify values after filling.
+- BootstrapManager.
+- Service readiness.
+- Startup progress.
+- Startup failure handling.
+- Graceful shutdown.
+- Ollama ownership-aware shutdown.
 
 ---
 
-# PHASE 23 — APPLICATION STATE MACHINE
+# PHASE 10 — CANDIDATE PROFILE SYSTEM
 
 Build:
 
-- States
-- Valid transitions
-- Persistence
-- Pause
-- Resume
-- Cancel
-- Needs-user states
-- Failure states
+- Personal details.
+- Career data.
+- Skills.
+- Experience.
+- Education.
+- Projects.
+- Certifications.
+- Languages.
+- Compensation.
+- Preferences.
+- Authorization.
+- Standard answers.
+
+Use one canonical CandidateProfile.
 
 ---
 
-# PHASE 24 — APPLICATION ORCHESTRATOR
+# PHASE 11 — RESUME & DOCUMENT SYSTEM
 
-Build generic application workflow:
+Build:
+
+- PDF upload.
+- PDF validation.
+- Resume text extraction.
+- Structured resume parsing.
+- Original file retention.
+- DocumentManager.
+- Resume metadata.
+- Upload-ready file path.
+
+---
+
+# PHASE 12 — PROFILE & DOCUMENT UI
+
+Build:
+
+- Profile sections.
+- Save/load.
+- Validation.
+- Resume upload.
+- Documents view.
+- Standard answers.
+- User-friendly errors.
+
+---
+
+# PHASE 13 — BROWSER RUNTIME
+
+Build:
+
+- Playwright BrowserManager.
+- Chromium installation check.
+- Browser context.
+- Tabs.
+- Frames.
+- Navigation.
+- Uploads.
+- Screenshots.
+- Browser mode.
+- Timeouts.
+- Artifact capture.
+
+---
+
+# PHASE 14 — JOB PLATFORM SESSION MANAGER
+
+Build:
+
+- Interactive platform login.
+- Session save.
+- Session restore.
+- Session validation.
+- Expired session detection.
+- Login-required state.
+- Platform session UI.
+
+---
+
+# PHASE 15 — PLATFORM ADAPTER FRAMEWORK
+
+Build:
+
+- PlatformAdapter interface.
+- Platform registry.
+- Capability model.
+- Adapter loading.
+
+Register:
+
+- LinkedIn.
+- Naukri.
+- Internshala.
+- Indeed.
+- Wellfound.
+
+---
+
+# PHASE 16 — JOB NORMALIZATION
+
+Build:
+
+- RawPlatformJob.
+- Canonical Job.
+- URL normalization.
+- Company normalization.
+- Location normalization.
+- Duplicate detection.
+
+---
+
+# PHASE 17 — JOB DISCOVERY ENGINE
+
+Build generic discovery service:
+
+- Search request.
+- Multi-platform execution.
+- Pagination.
+- Search limits.
+- Cancellation.
+- Progress.
+- Error isolation.
+- Persistence.
+
+---
+
+# PHASE 18 — JOB SEARCH ADAPTERS
+
+Implement job discovery for:
+
+- LinkedIn.
+- Naukri.
+- Internshala.
+- Indeed.
+- Wellfound.
+
+Run controlled search smoke tests.
+
+---
+
+# PHASE 19 — JOB MATCHING ENGINE
+
+Build:
+
+- Skill comparison.
+- Experience comparison.
+- Education comparison.
+- Location compatibility.
+- Authorization compatibility.
+- Seniority compatibility.
+- Semantic AI analysis.
+- Overall match.
+- Missing skills.
+- Explanation.
+
+---
+
+# PHASE 20 — APPROVAL POLICY ENGINE
+
+Build:
+
+- Manual Mode.
+- Smart Mode.
+- Autonomous Mode.
+- Match thresholds.
+- Daily limits.
+- Platform rules.
+- Company blacklist.
+- Location rules.
+- Role rules.
+- Salary rules.
+
+---
+
+# PHASE 21 — FORM FIELD MODEL
+
+Create normalized types for:
+
+- Text.
+- Email.
+- Phone.
+- Number.
+- Textarea.
+- URL.
+- Select.
+- Custom Select.
+- Radio.
+- Checkbox.
+- Checkbox Group.
+- Combobox.
+- Autocomplete.
+- Multiselect.
+- Date.
+- File.
+- Resume.
+- Consent.
+- Unknown.
+
+---
+
+# PHASE 22 — FORM OBSERVATION & EXTRACTION
+
+Build:
+
+- Form detection.
+- Field extraction.
+- Label extraction.
+- Required-state detection.
+- Current values.
+- Options.
+- Validation errors.
+- Stable locator generation.
+
+Build local fake application sites for testing.
+
+---
+
+# PHASE 23 — ANSWER ENGINE
+
+Build:
+
+- CandidateProfile lookup.
+- Saved answer lookup.
+- Semantic answer matching.
+- Safe derivation.
+- AI writing.
+- Unknown factual detection.
+- Confidence.
+- User-confirmation requirement.
+- Batch AI answering.
+
+---
+
+# PHASE 24 — ANSWER MEMORY
+
+Build:
+
+- Canonical question memory.
+- Semantic aliases.
+- User-confirmed answers.
+- Confidence.
+- Reuse policy.
+- Edit/delete UI.
+
+---
+
+# PHASE 25 — FORM EXECUTION ENGINE
+
+Implement:
+
+- Text.
+- Email.
+- Phone.
+- Number.
+- Textarea.
+- Select.
+- Radio.
+- Checkbox.
+- Custom dropdown.
+- Combobox.
+- Autocomplete.
+- Date.
+- File upload.
+- Resume upload.
+- Multiselect.
+- Consent.
+
+Verify browser values after filling.
+
+---
+
+# PHASE 26 — APPLICATION STATE MACHINE
+
+Build:
+
+- States.
+- Valid transitions.
+- Persistence.
+- Events.
+- Pause.
+- Resume.
+- Cancel.
+- Needs-user states.
+- Failure states.
+
+---
+
+# PHASE 27 — APPLICATION ORCHESTRATOR
+
+Build generic workflow:
 
 Job
 → Session
-→ Application Open
+→ Open Application
 → Observe
+→ Resolve
 → Fill
 → Validate
 → Next
 → Review
 → Submit
 
-Test on local fake sites.
+Test against fake application sites.
 
 ---
 
-# PHASE 25 — VERIFICATION ENGINE
+# PHASE 28 — SUBMISSION VERIFICATION
 
 Build:
 
-- Success message detection
-- URL verification
-- Applied state
-- Platform signals
-- Verification confidence
-- VERIFIED_APPLIED
-- SUBMITTED_UNVERIFIED
-- ALREADY_APPLIED
+- Generic success detection.
+- URL signals.
+- Confirmation text.
+- Applied-state detection.
+- Platform signals.
+- Evidence model.
+- VERIFIED_APPLIED.
+- SUBMITTED_UNVERIFIED.
+- ALREADY_APPLIED.
 
 Critical rule:
 
-Submit click alone must never equal success.
+Clicking Submit alone must never equal success.
 
 ---
 
-# PHASE 26 — RECOVERY ENGINE
+# PHASE 29 — RECOVERY ENGINE
 
 Build:
 
-- Page snapshot
-- Popup recovery
-- New tab recovery
-- Iframe recovery
-- Validation recovery
-- Session recovery
-- Retry limits
-- User intervention
-- Failure diagnostics
+- PageSnapshot.
+- Popup recovery.
+- New-tab recovery.
+- Iframe recovery.
+- Validation recovery.
+- Session-expired recovery.
+- Retry budgets.
+- User intervention.
+- Failure diagnostics.
 
 ---
 
-# PHASE 27 — LINKEDIN APPLICATION ADAPTER
+# PHASE 30 — LINKEDIN APPLICATION ADAPTER
 
-Build LinkedIn-specific:
+Build:
 
-- Easy Apply detection
-- Already applied
-- Application state signals
-- Platform navigation
-- Verification signals
+- Easy Apply detection.
+- Already-applied detection.
+- Application state signals.
+- Platform navigation.
+- Verification signals.
 
-Use generic form engine.
+Use generic form/application systems.
 
 Run controlled real tests.
 
 ---
 
-# PHASE 28 — INTERNSHALA APPLICATION ADAPTER
+# PHASE 31 — INTERNSHALA APPLICATION ADAPTER
 
 Build:
 
-- Apply detection
-- Eligibility detection
-- Resume/profile step
-- Application state signals
-- Success verification
+- Apply detection.
+- Eligibility detection.
+- Resume/profile step.
+- Application signals.
+- Verification.
 
 Critical regression:
 
-Not Eligible must never be counted as Applied.
+Not Eligible must never become Verified Applied.
 
 ---
 
-# PHASE 29 — NAUKRI APPLICATION ADAPTER
+# PHASE 32 — NAUKRI APPLICATION ADAPTER
 
 Build:
 
-- Apply detection
-- Native application
-- External redirect detection
-- Application form state
-- Verification
+- Apply detection.
+- Native apply.
+- External redirect detection.
+- Form state.
+- Verification.
 
 ---
 
-# PHASE 30 — INDEED APPLICATION ADAPTER
+# PHASE 33 — INDEED APPLICATION ADAPTER
 
 Build:
 
-- Indeed Apply
-- Iframe support
-- Multi-step navigation
-- Resume upload
-- CAPTCHA pause
-- Verification
-
-Important:
+- Indeed Apply.
+- Iframe support.
+- Multi-step navigation.
+- Resume upload.
+- Human-verification state.
+- Verification.
 
 Do not silently swallow errors.
 
 ---
 
-# PHASE 31 — WELLFOUND APPLICATION ADAPTER
+# PHASE 34 — WELLFOUND APPLICATION ADAPTER
 
 Build:
 
-- Apply
-- Questions
-- Multi-step forms
-- Re-observe after every Next
-- Resume behavior
-- Verification
+- Apply.
+- Questions.
+- Multi-step handling.
+- Re-observe after Next.
+- Resume behavior.
+- Verification.
 
 ---
 
-# PHASE 32 — EMAIL TRACKER
+# PHASE 35 — EMAIL TRACKER
 
 Build:
 
-- Multiple email accounts
-- Secure credentials
-- IMAP
-- UID state
-- New email detection
-- Classification
-- Application matching
-- Timeline updates
-- Ambiguous match review
+- Multiple email accounts.
+- Secure credentials.
+- IMAP.
+- UID persistence.
+- New-message processing.
+- Classification.
+- Application matching.
+- Timeline updates.
+- Ambiguous-match review.
 
 ---
 
-# PHASE 33 — DASHBOARD, CRM & ANALYTICS
+# PHASE 36 — DASHBOARD, CRM & ANALYTICS
 
 Build:
 
-- Dashboard
-- Activity feed
-- Application tracker
-- Kanban
-- Email tracker UI
-- Analytics
-- Platform metrics
-- Interview statistics
-- Failure statistics
+- Mission Control dashboard.
+- Activity feed.
+- Application tracker.
+- Kanban.
+- Email Tracker UI.
+- Analytics.
+- Platform metrics.
+- Interview metrics.
+- Failure metrics.
 
 ---
 
-# PHASE 34 — NORVI LICENSING
-
-Build:
-
-- NORVI account
-- Activation
-- Device authorization
-- Signed lease
-- Offline grace period
-- Account screen
-- Safe failure
-
----
-
-# PHASE 35 — PRODUCTION RELEASE
+# PHASE 37 — PRODUCTION HARDENING & RELEASE
 
 Perform:
 
-- Full unit tests
-- Integration tests
-- E2E tests
-- Platform regression
-- Security review
-- Fresh install
-- Playwright install
-- Database bootstrap
-- PyInstaller
-- Clean Windows test
-- Packaging
-- Final production validation
+- Unit suite.
+- Integration suite.
+- E2E suite.
+- Authentication tests.
+- Ollama lifecycle tests.
+- Application regression tests.
+- Real-platform smoke tests.
+- Security review.
+- Fresh Windows installation.
+- Automatic Ollama installation test.
+- Ollama sign-in test.
+- Ollama crash recovery test.
+- Database bootstrap.
+- Playwright bootstrap.
+- PyInstaller build.
+- Clean Windows VM test.
+- Graceful shutdown test.
+- Final production validation.
 
-Rolvio is complete only after real end-to-end validation succeeds.
+Rolvio is complete only when real end-to-end validation succeeds.
