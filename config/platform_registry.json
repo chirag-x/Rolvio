@@ -1,0 +1,77 @@
+{
+  "version": 1,
+  "platforms": [
+    {
+      "key": "linkedin",
+      "name": "LinkedIn",
+      "status": "initial",
+      "category": "indian_global"
+    },
+    {
+      "key": "naukri",
+      "name": "Naukri",
+      "status": "initial",
+      "category": "indian_global"
+    },
+    {
+      "key": "internshala",
+      "name": "Internshala",
+      "status": "initial",
+      "category": "indian_global"
+    },
+    {
+      "key": "indeed",
+      "name": "Indeed",
+      "status": "initial",
+      "category": "global"
+    },
+    {
+      "key": "wellfound",
+      "name": "Wellfound",
+      "status": "initial",
+      "category": "startup_global"
+    },
+    {
+      "key": "shine",
+      "name": "Shine",
+      "status": "future",
+      "category": "indian"
+    },
+    {
+      "key": "timesjobs",
+      "name": "TimesJobs",
+      "status": "future",
+      "category": "indian"
+    },
+    {
+      "key": "hirist",
+      "name": "Hirist",
+      "status": "future",
+      "category": "indian_tech"
+    },
+    {
+      "key": "freshersworld",
+      "name": "Freshersworld",
+      "status": "future",
+      "category": "indian_fresher"
+    },
+    {
+      "key": "glassdoor",
+      "name": "Glassdoor",
+      "status": "future",
+      "category": "global"
+    },
+    {
+      "key": "otta",
+      "name": "Otta / Successor",
+      "status": "future",
+      "category": "startup_global"
+    },
+    {
+      "key": "remotive",
+      "name": "Remotive",
+      "status": "future",
+      "category": "remote_global"
+    }
+  ]
+}

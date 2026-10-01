@@ -1,0 +1,13 @@
+{
+  "app_name": "Rolvio",
+  "environment": "development",
+  "database": {
+    "url": "sqlite:///data/db/rolvio.db"
+  },
+  "browser": {
+    "headless_default": false
+  },
+  "application": {
+    "default_mode": "manual"
+  }
+}

@@ -1,0 +1,83 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Environment secrets
+.env
+.env.*
+!.env.example
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build
+build/
+dist/
+*.spec
+
+# Test
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Local database
+data/db/*
+!data/db/.gitkeep
+*.db
+*.sqlite
+*.sqlite3
+
+# User documents
+data/documents/*
+!data/documents/.gitkeep
+
+# Browser sessions
+data/sessions/*
+!data/sessions/.gitkeep
+
+# Exports
+data/exports/*
+!data/exports/.gitkeep
+
+# Runtime
+runtime/logs/*
+!runtime/logs/.gitkeep
+
+runtime/screenshots/*
+!runtime/screenshots/.gitkeep
+
+runtime/traces/*
+!runtime/traces/.gitkeep
+
+runtime/dom/*
+!runtime/dom/.gitkeep
+
+runtime/failures/*
+!runtime/failures/.gitkeep
+
+runtime/temp/*
+!runtime/temp/.gitkeep
+
+# Playwright
+playwright-report/
+test-results/
+
+# Sensitive browser states
+storageState*.json
+auth*.json
+
+# Resume / personal docs outside data/
+*.pdf
+*.docx
+*.doc

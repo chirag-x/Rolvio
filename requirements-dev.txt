@@ -1,0 +1,9 @@
+-r requirements.txt
+
+pytest
+pytest-asyncio
+pytest-mock
+pytest-cov
+ruff
+mypy
+pyinstaller
